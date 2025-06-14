@@ -9,12 +9,12 @@ use Filament\Support\Assets\Js;
 use Filament\Support\Facades\FilamentAsset;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Filesystem\Filesystem;
+use irajul\Blogflow\Commands\BlogflowCommand;
+use irajul\Blogflow\Testing\TestsBlogflow;
 use Livewire\Features\SupportTesting\Testable;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use irajul\Blogflow\Commands\BlogflowCommand;
-use irajul\Blogflow\Testing\TestsBlogflow;
 
 class BlogflowServiceProvider extends PackageServiceProvider
 {
@@ -101,8 +101,8 @@ class BlogflowServiceProvider extends PackageServiceProvider
     {
         return [
             // AlpineComponent::make('blogflow', __DIR__ . '/../resources/dist/components/blogflow.js'),
-            Css::make('blogflow-styles', __DIR__ . '/../resources/dist/blogflow.css'),
-            Js::make('blogflow-scripts', __DIR__ . '/../resources/dist/blogflow.js'),
+            // Css::make('blogflow-styles', __DIR__ . '/../resources/dist/blogflow.css'),
+            // Js::make('blogflow-scripts', __DIR__ . '/../resources/dist/blogflow.js'),
         ];
     }
 

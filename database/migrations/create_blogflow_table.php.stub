@@ -3,17 +3,38 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use irajul\Blogflow\Enums\Status;
+use irajul\Blogflow\Enums\Type;
 
 return new class extends Migration
 {
     public function up()
     {
-        Schema::create('blogflow_table', function (Blueprint $table) {
+        $authorForeignKey = config('blogflow.user.foreign_key');
+        Schema::create(config('blogflow.tables.prefix').'posts', function (Blueprint $table) {
             $table->id();
-
-            // add fields
-
+            $table->string('title')->nullable();
+            $table->string('slug')->unique()->index();
+            $table->json('content')->nullable();
+            $table->string('post_type')->default(Type::Post->value);
+            $table->integer('ordering')->default(1);
+            $table->string('password')->nullable();
+            $table->string('status')->default(Status::Draft->value);
+            $table->dateTime('sticky_until')->nullable();
+            $table->dateTime('published_at')->nullable();
+            $table->integer('views')->nullable();
+            $table->string('estimated_reading_time')->nullable();
+            $table->string('meta_description')->nullable();
+            $table->string('meta_title')->nullable();
+            $table->json('featured_image')->nullable();
+            $table->foreignId(config('blogflow.user.foreign_key'))->constrained();
+            $table->softDeletes();
             $table->timestamps();
         });
+    }
+
+    public function down()
+    {
+        Schema::dropIfExists(config('blogflow.tables.prefix').'posts');
     }
 };

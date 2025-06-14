@@ -17,6 +17,18 @@ You can install the package via composer:
 composer require irajul/blogflow
 ```
 
+If you haven't already done so, you need to publish the migration to create the tags table:
+
+php artisan vendor:publish --provider="Spatie\Tags\TagsServiceProvider" --tag="tags-migrations"
+
+For more information, check out [Spatie's documentation](https://spatie.be/docs/laravel-tags).
+
+php artisan vendor:publish --provider="Spatie\MediaLibrary\MediaLibraryServiceProvider" --tag="medialibrary-migrations"
+
+You must also [prepare your Eloquent model](https://spatie.be/docs/laravel-medialibrary/basic-usage/preparing-your-model) for attaching media.
+
+For more information, check out [Spatie's documentation](https://spatie.be/docs/laravel-medialibrary).
+
 You can publish and run the migrations with:
 
 ```bash
@@ -45,10 +57,6 @@ return [
 
 ## Usage
 
-```php
-$blogflow = new irajul\Blogflow();
-echo $blogflow->echoPhrase('Hello, irajul!');
-```
 
 ## Testing
 
@@ -72,6 +80,10 @@ Please review [our security policy](../../security/policy) on how to report secu
 
 - [Rajul](https://github.com/iRajul)
 - [All Contributors](../../contributors)
+
+## Sponsor
+
+- [NextSprints](https://nextsprints.com)
 
 ## License
 

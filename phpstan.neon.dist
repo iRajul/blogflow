@@ -11,4 +11,6 @@ parameters:
     checkOctaneCompatibility: true
     checkModelProperties: true
     checkMissingIterableValueType: false
+    ignoreErrors:
+        - '#Class App\\Models\\User not found#'
 
