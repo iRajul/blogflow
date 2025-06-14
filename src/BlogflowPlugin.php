@@ -1,15 +1,15 @@
 <?php
 
-namespace VendorName\Skeleton;
+namespace irajul\Blogflow;
 
 use Filament\Contracts\Plugin;
 use Filament\Panel;
 
-class SkeletonPlugin implements Plugin
+class BlogflowPlugin implements Plugin
 {
     public function getId(): string
     {
-        return 'skeleton';
+        return 'blogflow';
     }
 
     public function register(Panel $panel): void

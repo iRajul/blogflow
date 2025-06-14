@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+namespace irajul\Blogflow\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class BlogflowCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'blogflow';
 
     public $description = 'My command';
 
