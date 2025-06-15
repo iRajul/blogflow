@@ -7,7 +7,10 @@
 
 ![blogflow](https://github.com/user-attachments/assets/241e0749-019f-42b9-94d2-494c6974b835)
 
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
+opioniated laravel filament panel plugin to add markdown blog support. This is only backend plugin. 
+As people can use any frontend framework to create frontend for blogflow.
+
+It requires few pre requisites packages to work, so make they available in your project.
 
 ## Installation
 
@@ -19,11 +22,15 @@ composer require irajul/blogflow
 
 If you haven't already done so, you need to publish the migration to create the tags table:
 
+```bash
 php artisan vendor:publish --provider="Spatie\Tags\TagsServiceProvider" --tag="tags-migrations"
+```
 
 For more information, check out [Spatie's documentation](https://spatie.be/docs/laravel-tags).
 
+```bash
 php artisan vendor:publish --provider="Spatie\MediaLibrary\MediaLibraryServiceProvider" --tag="medialibrary-migrations"
+```
 
 You must also [prepare your Eloquent model](https://spatie.be/docs/laravel-medialibrary/basic-usage/preparing-your-model) for attaching media.
 
@@ -42,21 +49,35 @@ You can publish the config file with:
 php artisan vendor:publish --tag="blogflow-config"
 ```
 
-Optionally, you can publish the views using
+## Use Blog in Filament Panel
 
-```bash
-php artisan vendor:publish --tag="blogflow-views"
+```
+use irajul\Blogflow\Blogflow;
+
+public function panel(Panel $panel): Panel
+{
+    return $panel
+        ->plugins([
+            Blogflow::make()
+        ])
+}
 ```
 
-This is the contents of the published config file:
-
-```php
-return [
-];
+## Manage User Relationship
+Please ensure user model has relationshio with `Post` Model.
 ```
+<?php
 
-## Usage
+namespace App\Models;
 
+use irajul\Blogflow\Traits\HasBlog;
+use Illuminate\Auth\User as Authenticatable;
+
+class User extends Authenticatable
+{
+    use HasBlog;
+}
+```
 
 ## Testing
 
