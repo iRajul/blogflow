@@ -2,6 +2,10 @@
 
 All notable changes to `blogflow` will be documented in this file.
 
+## v1.0.1 - 2025-06-20
+
+**Full Changelog**: https://github.com/iRajul/blogflow/compare/v0.0.2...v1.0.1
+
 ## v0.0.2 - 2025-06-15
 
 ### What's Changed
