@@ -2,8 +2,10 @@
 
 namespace irajul\Blogflow\Filament\Resources\PostResource\Pages;
 
-use Filament\Actions;
 use Filament\Actions\Action;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\ForceDeleteAction;
+use Filament\Actions\RestoreAction;
 use Filament\Resources\Pages\EditRecord;
 use irajul\Blogflow\Filament\Resources\PostResource;
 use irajul\Blogflow\Models\Post;
@@ -20,9 +22,9 @@ class EditPost extends EditRecord
             //     ->url(fn (Post $record) => route($record->route_name, $record->slug))
             //     ->icon('heroicon-o-eye')
             //     ->openUrlInNewTab(),
-            Actions\DeleteAction::make(),
-            Actions\ForceDeleteAction::make(),
-            Actions\RestoreAction::make(),
+            DeleteAction::make(),
+            ForceDeleteAction::make(),
+            RestoreAction::make(),
         ];
     }
 }

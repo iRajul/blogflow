@@ -2,22 +2,29 @@
 
 namespace irajul\Blogflow\Filament\Resources;
 
-use Filament\Forms;
+use BackedEnum;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ForceDeleteBulkAction;
+use Filament\Actions\RestoreBulkAction;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\MarkdownEditor;
-use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\SpatieTagsInput;
-use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
-use Filament\Forms\Get;
-use Filament\Forms\Set;
 use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Schemas\Components\Tabs;
+use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
+use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -25,6 +32,9 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use irajul\Blogflow\Enums\Status;
 use irajul\Blogflow\Enums\Type;
+use irajul\Blogflow\Filament\Resources\PostResource\Pages\CreatePost;
+use irajul\Blogflow\Filament\Resources\PostResource\Pages\EditPost;
+use irajul\Blogflow\Filament\Resources\PostResource\Pages\ListPosts;
 use irajul\Blogflow\Models\Post;
 use League\Flysystem\UnableToCheckFileExistence;
 
@@ -32,14 +42,14 @@ class PostResource extends Resource
 {
     protected static ?string $model = Post::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string | BackedEnum | null $navigationIcon = Heroicon::RectangleStack;
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Tabs::make('post_tabs')->schema([
-                    Tabs\Tab::make(__('Title & Content'))->schema([
+                    Tab::make(__('Title & Content'))->schema([
                         TextInput::make('title')
                             ->label(__('Post Title'))
                             ->required()
@@ -86,10 +96,10 @@ class PostResource extends Resource
 
                     ]),
 
-                    Tabs\Tab::make(__('SEO'))->schema([
-                        Placeholder::make(__('Search Engine Optimization')),
+                    Tab::make(__('SEO'))->schema([
+                        // Placeholder::make(__('Search Engine Optimization')),
 
-                        Forms\Components\Select::make('user_id')
+                        Select::make('user_id')
                             ->relationship('author', 'name')
                             ->searchable()
                             ->required(),
@@ -109,14 +119,18 @@ class PostResource extends Resource
                             ->label(__('Meta Description'))
                             ->hint(__('Meta Description')),
 
+                        TextInput::make('estimated_reading_time')
+                            ->label(__('Estimated Reading Time'))
+                            ->hint(__('Estimated Reading Time')),
+
                         TextInput::make('slug')
                             ->unique(ignorable: fn (?Post $record): ?Post => $record)
                             ->required()
                             ->maxLength(255)
                             ->label(__('Post Slug')),
                     ]),
-                    Tabs\Tab::make(__('Tags'))->schema([
-                        Placeholder::make(__('Tags and Categories')),
+                    Tab::make(__('Tags'))->schema([
+                        // Placeholder::make(__('Tags and Categories')),
                         SpatieTagsInput::make('tags')
                             ->type(config('blogflow.tables.prefix') . 'post_tag')
                             ->label(__('Tags')),
@@ -127,8 +141,8 @@ class PostResource extends Resource
 
                     ]),
 
-                    Tabs\Tab::make(__('Visibility'))->schema([
-                        Placeholder::make(__('Visibility Options')),
+                    Tab::make(__('Visibility'))->schema([
+                        // Placeholder::make(__('Visibility Options')),
                         Select::make('status')
                             ->label(__('Status'))
                             ->default(Status::Published->value)
@@ -150,8 +164,8 @@ class PostResource extends Resource
                             ->label(__('Sticky Until')),
                     ]),
 
-                    Tabs\Tab::make(__('Image'))->schema([
-                        Placeholder::make(__('Featured Image')),
+                    Tab::make(__('Image'))->schema([
+                        // Placeholder::make(__('Featured Image')),
 
                         SpatieMediaLibraryFileUpload::make('featured_image_upload')
                             ->collection(config('blogflow.featured_image.collection_name'))
@@ -172,50 +186,52 @@ class PostResource extends Resource
                         TextInput::make('featured_image.alt')
                             ->label(__('Featured Image Alt')),
                     ]),
-                ])->columnSpan(2),
+                ])
+                    ->columnSpan('full'),
             ]);
+
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('title')
+                TextColumn::make('title')
                     ->searchable()
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('author.name')
+                TextColumn::make('author.name')
                     ->label('Author')
                     ->searchable()
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('post_type')
+                TextColumn::make('post_type')
                     ->badge()
                     ->searchable()
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('status')
+                TextColumn::make('status')
                     ->badge()
                     ->searchable()
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('published_at')
+                TextColumn::make('published_at')
                     ->label('Published')
                     ->dateTime('M j, Y g:i A')
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('views')
+                TextColumn::make('views')
                     ->numeric()
                     ->sortable()
                     ->toggleable(),
 
-                Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('created_at')
                     ->dateTime('M j, Y')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                Tables\Filters\TrashedFilter::make(),
+                TrashedFilter::make(),
                 SelectFilter::make('post_type')
                     ->options(Type::class)
                     ->default(Type::Post->value),
@@ -223,19 +239,19 @@ class PostResource extends Resource
                     ->options(Status::class)
                     ->default(Status::Published->value),
             ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
+            ->recordActions([
+                EditAction::make(),
                 // Tables\Actions\ViewAction::make('view')
                 //     ->label('View')
                 //     ->url(fn (Post $record) => route($record->route_name, $record->slug))
                 //     ->icon('heroicon-o-eye')
                 //     ->openUrlInNewTab(),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                    Tables\Actions\ForceDeleteBulkAction::make(),
-                    Tables\Actions\RestoreBulkAction::make(),
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
+                    ForceDeleteBulkAction::make(),
+                    RestoreBulkAction::make(),
                 ]),
             ]);
     }
@@ -250,9 +266,9 @@ class PostResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => \irajul\Blogflow\Filament\Resources\PostResource\Pages\ListPosts::route('/'),
-            'create' => \irajul\Blogflow\Filament\Resources\PostResource\Pages\CreatePost::route('/create'),
-            'edit' => \irajul\Blogflow\Filament\Resources\PostResource\Pages\EditPost::route('/{record}/edit'),
+            'index' => ListPosts::route('/'),
+            'create' => CreatePost::route('/create'),
+            'edit' => EditPost::route('/{record}/edit'),
         ];
     }
 
