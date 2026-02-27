@@ -2,6 +2,15 @@
 
 All notable changes to `blogflow` will be documented in this file.
 
+## v2.0.0 - 2026-02-27
+
+### What's Changed
+
+* Bump aglipanci/laravel-pint-action from 2.5 to 2.6 by @dependabot[bot] in https://github.com/iRajul/blogflow/pull/2
+* Bump dependabot/fetch-metadata from 2.4.0 to 2.5.0 by @dependabot[bot] in https://github.com/iRajul/blogflow/pull/6
+
+**Full Changelog**: https://github.com/iRajul/blogflow/compare/v1.0.1...v2.0.0
+
 ## v1.0.1 - 2025-06-20
 
 **Full Changelog**: https://github.com/iRajul/blogflow/compare/v0.0.2...v1.0.1
