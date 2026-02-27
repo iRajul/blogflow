@@ -42,7 +42,7 @@ class PostResource extends Resource
 {
     protected static ?string $model = Post::class;
 
-    protected static string | BackedEnum | null $navigationIcon = Heroicon::RectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::RectangleStack;
 
     public static function form(Schema $schema): Schema
     {
@@ -64,14 +64,14 @@ class PostResource extends Resource
                         MarkdownEditor::make('content')
                             ->label(__('Post Content'))
                             ->fileAttachmentsDisk(config('blogflow.disk'))
-                            ->fileAttachmentsVisibility('public')
                             ->fileAttachmentsDirectory('blog_assets')
+                            ->fileAttachmentsAcceptedFileTypes(['image/png', 'image/jpeg'])
                             ->getUploadedAttachmentUrlUsing(function ($file) {
                                 $disk_name = config('blogflow.disk');
                                 $storage = Storage::disk($disk_name);
 
                                 try {
-                                    if (! $storage->exists($file)) {
+                                    if (!$storage->exists($file)) {
                                         return null;
                                     }
                                 } catch (UnableToCheckFileExistence $exception) {
@@ -124,7 +124,7 @@ class PostResource extends Resource
                             ->hint(__('Estimated Reading Time')),
 
                         TextInput::make('slug')
-                            ->unique(ignorable: fn (?Post $record): ?Post => $record)
+                            ->unique(ignorable: fn(?Post $record): ?Post => $record)
                             ->required()
                             ->maxLength(255)
                             ->label(__('Post Slug')),
@@ -152,7 +152,7 @@ class PostResource extends Resource
 
                         TextInput::make('password')
                             ->label(__('Password'))
-                            ->visible(fn (Get $get): bool => $get('status') === 'private'),
+                            ->visible(fn(Get $get): bool => $get('status') === 'private'),
 
                         DateTimePicker::make('published_at')
                             ->label(__('Published at'))
